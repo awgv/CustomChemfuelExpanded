@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <packageId>awgv.VanillaChemfuelExpanded.Custom</packageId>
+  <name>Custom Chemfuel Expanded</name>
+  <author>J</author>
+  <supportedVersions>
+    <li>1.5</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>VanillaExpanded.VChemfuelE</packageId>
+      <displayName>Vanilla Chemfuel Expanded</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2792917473</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <description>A settings page for Vanilla Chemfuel Expanded that offers an alternative balance preset.</description>
+</ModMetaData>
