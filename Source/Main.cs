@@ -20,14 +20,14 @@ namespace CustomChemfuelExpanded
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref deepchemTankIsDisabled, "deepchemTankIsDisabled", false);
+            Scribe_Values.Look(ref deepchemTankIsDisabled, "deepchemTankIsDisabled");
             Scribe_Values.Look(ref deepCountPerCell, "deepCountPerCell");
             Scribe_Values.Look(ref deepchemTankStorageCapacity, "deepchemTankStorageCapacity");
             Scribe_Values.Look(ref chemfuelTankStorageCapacity, "chemfuelTankStorageCapacity");
-            Scribe_Values.Look(ref ticksToExtract, "ticksToExtract", 60);
-            Scribe_Values.Look(ref ticksToRefine, "ticksToRefine", 300);
-            Scribe_Values.Look(ref deepchemConversionRatio, "deepchemConversionRatio", 1);
-            Scribe_Values.Look(ref chemfuelConversionRatio, "chemfuelConversionRatio", 3);
+            Scribe_Values.Look(ref ticksToExtract, "ticksToExtract");
+            Scribe_Values.Look(ref ticksToRefine, "ticksToRefine");
+            Scribe_Values.Look(ref deepchemConversionRatio, "deepchemConversionRatio");
+            Scribe_Values.Look(ref chemfuelConversionRatio, "chemfuelConversionRatio");
             base.ExposeData();
         }
 
