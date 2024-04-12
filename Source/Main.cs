@@ -38,7 +38,7 @@ namespace CustomChemfuelExpanded
             deepchemTankStorageCapacity = 2700;
             chemfuelTankStorageCapacity = 2700;
             ticksToExtract = 200;
-            ticksToRefine = 300;
+            ticksToRefine = 600;
             deepchemConversionRatio = 2;
             chemfuelConversionRatio = 1;
         }
