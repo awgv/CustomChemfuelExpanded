@@ -14,7 +14,7 @@ namespace CustomChemfuelExpanded
         public int deepchemTankStorageCapacity = 2700;
         public int chemfuelTankStorageCapacity = 2700;
         public int ticksToExtract = 200;
-        public int ticksToRefine = 300;
+        public int ticksToRefine = 600;
         public int deepchemConversionRatio = 2;
         public int chemfuelConversionRatio = 1;
 
