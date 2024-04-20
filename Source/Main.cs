@@ -17,6 +17,8 @@ namespace CustomChemfuelExpanded
         public int ticksToRefine = 600;
         public int deepchemConversionRatio = 2;
         public int chemfuelConversionRatio = 1;
+        public int deepchemWeight = 70;
+        public int chemfuelWeight = 50;
 
         public override void ExposeData()
         {
@@ -28,6 +30,8 @@ namespace CustomChemfuelExpanded
             Scribe_Values.Look(ref ticksToRefine, "ticksToRefine");
             Scribe_Values.Look(ref deepchemConversionRatio, "deepchemConversionRatio");
             Scribe_Values.Look(ref chemfuelConversionRatio, "chemfuelConversionRatio");
+            Scribe_Values.Look(ref deepchemWeight, "deepchemWeight");
+            Scribe_Values.Look(ref chemfuelWeight, "chemfuelWeight");
             base.ExposeData();
         }
 
@@ -41,6 +45,8 @@ namespace CustomChemfuelExpanded
             ticksToRefine = 600;
             deepchemConversionRatio = 2;
             chemfuelConversionRatio = 1;
+            deepchemWeight = 70;
+            chemfuelWeight = 50;
         }
 
         public void UseVanillaChemfuelExpandedPreset()
@@ -53,6 +59,8 @@ namespace CustomChemfuelExpanded
             ticksToRefine = 300;
             deepchemConversionRatio = 1;
             chemfuelConversionRatio = 3;
+            deepchemWeight = 70;
+            chemfuelWeight = 50;
         }
     }
 
@@ -159,6 +167,30 @@ namespace CustomChemfuelExpanded
             );
             listingStandard.Gap((float)commonGap);
 
+            listingStandard.Label("Amount of deepchem (left) that refines to chemfuel (right).");
+            rect = listingStandard.GetRect(textFieldHeight);
+            rect.xMin = 0f;
+            rect.xMax = rect.xMin + textFieldWidth;
+            string deepchemConversionRatioBuffer = settings.deepchemConversionRatio.ToString();
+            Widgets.TextFieldNumeric(
+                rect,
+                ref settings.deepchemConversionRatio,
+                ref deepchemConversionRatioBuffer,
+                0.0f,
+                65000.0f
+            );
+
+            rect.xMin += textFieldWidth + 4f;
+            rect.xMax = rect.xMin + textFieldWidth;
+            string chemfuelConversionRatioBuffer = settings.chemfuelConversionRatio.ToString();
+            Widgets.TextFieldNumeric(
+                rect,
+                ref settings.chemfuelConversionRatio,
+                ref chemfuelConversionRatioBuffer,
+                0.0f,
+                65000.0f
+            );
+
             // MARK: Column
             listingStandard.NewColumn();
             listingStandard.Gap(215f);
@@ -195,26 +227,33 @@ namespace CustomChemfuelExpanded
             );
             listingStandard.Gap((float)commonGap);
 
-            listingStandard.Label("Amount of deepchem (left) that refines to chemfuel (right).");
+            listingStandard.Label(
+                $"The weight of 1 deepchem in grams ({settings.deepchemWeight / 1000.0f} kg)."
+            );
             rect = listingStandard.GetRect(textFieldHeight);
             rect.xMin = columnWidth + 18f;
             rect.xMax = rect.xMin + textFieldWidth;
-            string deepchemConversionRatioBuffer = settings.deepchemConversionRatio.ToString();
+            string deepchemWeightBuffer = settings.deepchemWeight.ToString();
             Widgets.TextFieldNumeric(
                 rect,
-                ref settings.deepchemConversionRatio,
-                ref deepchemConversionRatioBuffer,
+                ref settings.deepchemWeight,
+                ref deepchemWeightBuffer,
                 0.0f,
                 65000.0f
             );
+            listingStandard.Gap((float)commonGap);
 
-            rect.xMin += textFieldWidth + 4f;
+            listingStandard.Label(
+                $"The weight of 1 chemfuel in grams ({settings.chemfuelWeight / 1000.0f} kg)."
+            );
+            rect = listingStandard.GetRect(textFieldHeight);
+            rect.xMin = columnWidth + 18f;
             rect.xMax = rect.xMin + textFieldWidth;
-            string chemfuelConversionRatioBuffer = settings.chemfuelConversionRatio.ToString();
+            string chemfuelWeightBuffer = settings.chemfuelWeight.ToString();
             Widgets.TextFieldNumeric(
                 rect,
-                ref settings.chemfuelConversionRatio,
-                ref chemfuelConversionRatioBuffer,
+                ref settings.chemfuelWeight,
+                ref chemfuelWeightBuffer,
                 0.0f,
                 65000.0f
             );
@@ -276,6 +315,14 @@ namespace CustomChemfuelExpanded
                 {
                     "Defs/ThingDef[defName=\"PS_DeepchemRefinery\"]/comps/li[@Class=\"PipeSystem.CompProperties_ResourceProcessor\"]/results/li[1]/netCount",
                     $"<netCount>{settings.chemfuelConversionRatio}</netCount>"
+                },
+                {
+                    "Defs/ThingDef[defName=\"VCHE_Deepchem\"]/statBases/Mass",
+                    $"<Mass>{settings.deepchemWeight / 1000.0f}</Mass>"
+                },
+                {
+                    "Defs/ThingDef[defName=\"Chemfuel\"]/statBases/Mass",
+                    $"<Mass>{settings.chemfuelWeight / 1000.0f}</Mass>"
                 },
             };
 
