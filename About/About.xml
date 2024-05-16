@@ -13,5 +13,9 @@
       <steamWorkshopUrl>steam://url/CommunityFilePage/2792917473</steamWorkshopUrl>
     </li>
   </modDependencies>
+  <incompatibleWith>
+    <li>bambaryla.VCEPU</li>
+  </incompatibleWith>
+  <modVersion>2024-05-16</modVersion>
   <description>A settings page for Vanilla Chemfuel Expanded that offers an alternative balance preset.</description>
 </ModMetaData>
