@@ -5,6 +5,7 @@
   <author>J</author>
   <supportedVersions>
     <li>1.5</li>
+    <li>1.6</li>
   </supportedVersions>
   <modDependencies>
     <li>
@@ -16,6 +17,6 @@
   <incompatibleWith>
     <li>bambaryla.VCEPU</li>
   </incompatibleWith>
-  <modVersion>2024-05-16</modVersion>
+  <modVersion>2.0.0</modVersion>
   <description>A settings page for Vanilla Chemfuel Expanded that offers an alternative balance preset.</description>
 </ModMetaData>
