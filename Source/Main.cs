@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-
 using UnityEngine;
 using Verse;
 
 namespace CustomChemfuelExpanded
 {
+    /// <remarks>
+    /// TODO: Rename deepchemConversionRatio, chemfuelConversionRatio, deepchemRefinedInTheRecipe
+    ///       and chemfuelProducedInTheRecipe to something normalized before compiling against 1.7.
+    ///       These names should be similar, just referring to deepchem and biofuel refinery respectively.
+    /// </remarks>
     public class Settings : ModSettings
     {
         public bool deepchemTankIsDisabled = true;
@@ -17,6 +21,8 @@ namespace CustomChemfuelExpanded
         public int ticksToRefine = 600;
         public int deepchemConversionRatio = 2;
         public int chemfuelConversionRatio = 1;
+        public int deepchemRefinedInTheRecipe = 70;
+        public int chemfuelProducedInTheRecipe = 25;
         public int deepchemWeight = 70;
         public int chemfuelWeight = 50;
 
@@ -30,6 +36,8 @@ namespace CustomChemfuelExpanded
             Scribe_Values.Look(ref ticksToRefine, "ticksToRefine");
             Scribe_Values.Look(ref deepchemConversionRatio, "deepchemConversionRatio");
             Scribe_Values.Look(ref chemfuelConversionRatio, "chemfuelConversionRatio");
+            Scribe_Values.Look(ref deepchemRefinedInTheRecipe, "deepchemRefinedInTheRecipe");
+            Scribe_Values.Look(ref chemfuelProducedInTheRecipe, "chemfuelProducedInTheRecipe");
             Scribe_Values.Look(ref deepchemWeight, "deepchemWeight");
             Scribe_Values.Look(ref chemfuelWeight, "chemfuelWeight");
             base.ExposeData();
@@ -45,6 +53,8 @@ namespace CustomChemfuelExpanded
             ticksToRefine = 600;
             deepchemConversionRatio = 2;
             chemfuelConversionRatio = 1;
+            deepchemRefinedInTheRecipe = 70;
+            chemfuelProducedInTheRecipe = 25;
             deepchemWeight = 70;
             chemfuelWeight = 50;
         }
@@ -59,6 +69,8 @@ namespace CustomChemfuelExpanded
             ticksToRefine = 300;
             deepchemConversionRatio = 1;
             chemfuelConversionRatio = 3;
+            deepchemRefinedInTheRecipe = 35;
+            chemfuelProducedInTheRecipe = 70;
             deepchemWeight = 70;
             chemfuelWeight = 50;
         }
@@ -67,6 +79,7 @@ namespace CustomChemfuelExpanded
     public class CustomChemfuelExpandedMod : Mod
     {
         readonly Settings settings;
+        private Vector2 scrollPosition = Vector2.zero;
 
         public CustomChemfuelExpandedMod(ModContentPack content)
             : base(content)
@@ -76,13 +89,18 @@ namespace CustomChemfuelExpanded
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            float columnWidth = (inRect.width - 36f) / 2f;
+            float windowWidth = inRect.width - 36f;
+            float columnWidth = windowWidth / 2f;
             float textFieldWidth = columnWidth / 8f;
             float textFieldHeight = 22f;
             float commonGap = 24f;
             Listing_Standard listingStandard = new Listing_Standard { ColumnWidth = columnWidth };
 
-            listingStandard.Begin(inRect);
+            Rect viewRect = new Rect(0f, 0f, windowWidth, 600f);
+
+            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect);
+
+            listingStandard.Begin(viewRect);
 
             // MARK: Section
             Listing_Standard listingStandard2 = listingStandard.BeginSection(67f);
@@ -167,7 +185,9 @@ namespace CustomChemfuelExpanded
             );
             listingStandard.Gap((float)commonGap);
 
-            listingStandard.Label("Amount of deepchem (left) that refines to chemfuel (right).");
+            listingStandard.Label(
+                "Amount of deepchem (left) that refines to chemfuel (right) in a deepchem refinery."
+            );
             rect = listingStandard.GetRect(textFieldHeight);
             rect.xMin = 0f;
             rect.xMax = rect.xMin + textFieldWidth;
@@ -187,6 +207,35 @@ namespace CustomChemfuelExpanded
                 rect,
                 ref settings.chemfuelConversionRatio,
                 ref chemfuelConversionRatioBuffer,
+                0.0f,
+                65000.0f
+            );
+            listingStandard.Gap((float)commonGap);
+
+            listingStandard.Label(
+                "Amount of deepchem (left) that refines to chemfuel (right) in a biofuel refinery."
+            );
+            rect = listingStandard.GetRect(textFieldHeight);
+            rect.xMin = 0f;
+            rect.xMax = rect.xMin + textFieldWidth;
+            string deepchemRefinedInTheRecipeBuffer =
+                settings.deepchemRefinedInTheRecipe.ToString();
+            Widgets.TextFieldNumeric(
+                rect,
+                ref settings.deepchemRefinedInTheRecipe,
+                ref deepchemRefinedInTheRecipeBuffer,
+                0.0f,
+                65000.0f
+            );
+
+            rect.xMin += textFieldWidth + 4f;
+            rect.xMax = rect.xMin + textFieldWidth;
+            string chemfuelProducedInTheRecipeBuffer =
+                settings.chemfuelProducedInTheRecipe.ToString();
+            Widgets.TextFieldNumeric(
+                rect,
+                ref settings.chemfuelProducedInTheRecipe,
+                ref chemfuelProducedInTheRecipeBuffer,
                 0.0f,
                 65000.0f
             );
@@ -259,6 +308,7 @@ namespace CustomChemfuelExpanded
             );
 
             listingStandard.End();
+            Widgets.EndScrollView();
             base.DoSettingsWindowContents(inRect);
         }
 
@@ -282,6 +332,7 @@ namespace CustomChemfuelExpanded
         protected override bool ApplyWorker(XmlDocument xml)
         {
             bool patchOperationIsSuccessful = false;
+
             Dictionary<string, string> xpathsToReplace = new Dictionary<string, string>()
             {
                 {
@@ -323,6 +374,14 @@ namespace CustomChemfuelExpanded
                 {
                     "Defs/ThingDef[defName=\"Chemfuel\"]/statBases/Mass",
                     $"<Mass>{settings.chemfuelWeight / 1000.0f}</Mass>"
+                },
+                {
+                    "Defs/RecipeDef[defName=\"VCHE_Make_ChemfuelFromDeepchem\"]/ingredients/li[1]/count",
+                    $"<count>{settings.deepchemRefinedInTheRecipe}</count>"
+                },
+                {
+                    "Defs/RecipeDef[defName=\"VCHE_Make_ChemfuelFromDeepchem\"]/products/Chemfuel",
+                    $"<Chemfuel>{settings.chemfuelProducedInTheRecipe}</Chemfuel>"
                 },
             };
 
